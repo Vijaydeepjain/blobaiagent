@@ -21,27 +21,26 @@ public class GeminiClient {
 
         String url = "https://generativelanguage.googleapis.com/v1/models/gemini-2.5-flash:generateContent?key=" + apiKey;
 
-        String prompt = """
-                Act as a professional content writer.
+        String prompt = "Generate a professional news-style post - which is trending in indian market on todays date.\n\n" +
+                "Topic: " + category + "\n\n" +
 
-                Write a high-quality LinkedIn post about %s.
+                "Requirements:\n" +
+                "- Headline: short, catchy\n" +
+                "- Body: 120–150 words, professional tone, think like u are a reporter like from the hindu  (just think dont add the hindu in article, think like a senior one)\n" +
+                "- ImagePrompt: describe a proper visual scene, use the internet for ideas\n\n" +
 
-                Guidelines:
-                - Tone: professional and engaging
-                - Length: 120–150 words
-                - Keep it informative and easy to read
-                - Do NOT copy content; generate original
-                - Avoid multiple options
+                "STRICT RULES:\n" +
+                "- Output MUST be valid JSON\n" +
+                "- Do NOT use markdown (no ```)\n" +
+                "- Do NOT add explanation\n" +
+                "- Escape all quotes properly\n\n" +
 
-                Return ONLY raw JSON.
-                Do NOT wrap in markdown or quotes.
-
-                Format:
-                {
-                  "headline": "Short catchy headline",
-                  "body": "Engaging content"
-                }
-                """.formatted(category);
+                "Return exactly this format:\n" +
+                "{\n" +
+                "  \"headline\": \"string\",\n" +
+                "  \"body\": \"string\",\n" +
+                "  \"imagePrompt\": \"string\"\n" +
+                "}";
 
         Map<String, Object> body = Map.of(
                 "contents", List.of(
