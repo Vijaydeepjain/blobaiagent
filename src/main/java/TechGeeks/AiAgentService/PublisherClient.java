@@ -6,7 +6,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 @Component
 public class PublisherClient {
 
-    private final WebClient webClient = WebClient.create("http://postwebapp-env.eba-8rgy9ptm.ap-south-1.elasticbeanstalk.com");
+    private final WebClient webClient = WebClient.create("https://postfridgeprod.onrender.com");
 
     public void createPost(PostRequest post, String token) {
 

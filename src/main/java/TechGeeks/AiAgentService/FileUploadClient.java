@@ -11,7 +11,7 @@ import java.util.Map;
 @Component
 public class FileUploadClient {
 
-    private final WebClient webClient = WebClient.create("http://postwebapp-env.eba-8rgy9ptm.ap-south-1.elasticbeanstalk.com");
+    private final WebClient webClient = WebClient.create("https://postfridgeprod.onrender.com");
 
     public Map<String, String> getUploadUrl(String token) {
 

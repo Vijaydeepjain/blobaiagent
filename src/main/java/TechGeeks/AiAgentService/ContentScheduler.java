@@ -11,7 +11,7 @@ public class ContentScheduler {
     @Autowired
     private ContentService contentService;
 
-    @Scheduled(fixedRate = 300000) // 5 minutes
+    @Scheduled(fixedRate = 100000) // 5 minutes
     public void run() {
         contentService.generateAndPublish();
     }
