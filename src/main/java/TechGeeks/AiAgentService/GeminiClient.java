@@ -10,6 +10,7 @@ import tools.jackson.databind.ObjectMapper;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ThreadLocalRandom;
 
 @Component
 public class GeminiClient {
@@ -34,14 +35,6 @@ public class GeminiClient {
                 )
         );
         System.out.println(prompt.length());
-//        Map response = webClient.post()
-//                .uri(url)
-//                .bodyValue(body)
-//                .retrieve()
-//                .bodyToMono(Map.class)
-//                .block();
-
-
 
         Map response = webClient.post()
                 .uri(url)
@@ -135,6 +128,47 @@ public class GeminiClient {
                         "\"imagePrompt\":\"\"\n" +
                         "}";
 
+            case "TECH":
+                String today = java.time.LocalDate.now().format(
+                        java.time.format.DateTimeFormatter.ofPattern("MMMM d, yyyy")
+                ); // Outputs: "August 29, 2026"
+
+                return "Generate an insightful technology article covering the latest developments, breakthroughs, or product announcements grounded in the current tech landscape as of " + today + ".\n\n" +
+
+                        "Writing Style:\n" +
+                        "- Objective, analytical, and authoritative tone.\n" +
+                        "- Deep technical context without unnecessary jargon.\n" +
+                        "- Focus on real-world engineering, developer takeaways, and industry impact.\n" +
+                        "- Concise, active voice.\n\n" +
+
+                        "Requirements:\n" +
+                        "- Headline less than 80 characters.\n" +
+                        "- Body between 400 and 700 words.\n" +
+                        "- Anchor to events, hardware previews, AI developments, or infrastructure news around " + today + ".\n" +
+                        "- Structure: Current Context/Announcement, Technical Breakdown, and Strategic Impact.\n\n" +
+
+                        "Avoid:\n" +
+                        "- AI buzzwords (e.g., tapestry, delve, game-changer, revolutionary, multifaceted, unlock).\n" +
+                        "- Speculative claims without architectural or factual grounding.\n" +
+                        "- Hashtags and emojis.\n\n" +
+
+                        "Body Format:\n" +
+                        "- Return body as valid HTML.\n" +
+                        "- Use only <p>, <h2>, <h3>, <code>, <pre>, <blockquote>, <ul>, and <li> tags.\n" +
+                        "- Keep paragraphs short and scannable.\n\n" +
+
+                        "ImagePrompt:\n" +
+                        "- Modern tech aesthetic or high-detail conceptual hardware/architecture render.\n" +
+                        "- Clean studio lighting, minimal, sharp focus.\n" +
+                        "- Photorealistic or sleek isometric style.\n" +
+                        "- No distorted text or generic glowing blue circuitry.\n\n" +
+
+                        "Return ONLY valid JSON:\n" +
+                        "{\n" +
+                        "\"headline\":\"\",\n" +
+                        "\"body\":\"\",\n" +
+                        "\"imagePrompt\":\"\"\n" +
+                        "}";
 
             case "TRAVEL":
                 return "Generate a travel experience story.\n\n" +
@@ -237,250 +271,442 @@ public class GeminiClient {
                         "}";
 
             case "HEALTH":
-                return "Generate a high-quality health and wellness article.\n\n" +
 
-                        "Writing Style:\n" +
-                        "- Professional but easy to understand.\n" +
-                        "- Friendly and trustworthy.\n" +
-                        "- Use simple natural English.\n" +
-                        "- Explain concepts clearly without medical jargon.\n" +
-                        "- Focus on practical advice readers can apply.\n" +
-                        "- Use evidence-based general health information.\n\n" +
+                String healthTopic = getRandomHealthTopic();
 
-                        "Topics:\n" +
-                        "- Nutrition\n" +
-                        "- Exercise and Fitness\n" +
-                        "- Sleep\n" +
-                        "- Mental Well-being\n" +
-                        "- Healthy Habits\n" +
-                        "- Preventive Health\n" +
-                        "- Hydration\n" +
-                        "- Workplace Health\n\n" +
+                return "Write a high-quality health and wellness article.\n\n" +
 
-                        "Requirements:\n" +
-                        "- Headline less than 80 characters.\n" +
-                        "- Body between 500 and 800 words.\n" +
-                        "- Include an engaging introduction.\n" +
-                        "- Explain the topic clearly.\n" +
-                        "- Provide practical tips.\n" +
-                        "- End with a short conclusion encouraging healthy habits.\n\n" +
+                        "TOPIC:\n" +
+                        healthTopic + "\n\n" +
 
-                        "Avoid:\n" +
-                        "- AI phrases.\n" +
-                        "- Medical diagnosis.\n" +
-                        "- Claims of guaranteed results.\n" +
-                        "- Fear-mongering.\n" +
-                        "- Words like tapestry, transformative, miracle, revolutionary, life-changing and magical.\n" +
-                        "- Cliches.\n" +
-                        "- Hashtags and emojis.\n\n" +
+                        "STYLE:\n" +
+                        "- Professional, friendly, trustworthy, and easy to understand.\n" +
+                        "- Use simple natural English and avoid unnecessary medical jargon.\n" +
+                        "- Write like a human health journalist, not an AI.\n" +
+                        "- Give practical advice readers can actually use.\n" +
+                        "- Explain the problem, useful solutions, and when professional medical advice may be appropriate.\n\n" +
 
-                        "Body Format:\n" +
-                        "- Return body as valid HTML.\n" +
-                        "- Use only <p>, <h2>, <blockquote> and <ul> tags.\n" +
-                        "- Use multiple short paragraphs.\n" +
-                        "- Use bullet lists where appropriate.\n\n" +
+                        "HEALTH RULES:\n" +
+                        "- Focus only on the selected topic.\n" +
+                        "- Be evidence-based and medically responsible.\n" +
+                        "- Never diagnose the reader.\n" +
+                        "- Never promise guaranteed results or claim a food, exercise, or habit can cure a disease.\n" +
+                        "- Do not recommend starting, stopping, or changing prescription medication.\n" +
+                        "- For health conditions, explain common risk factors, symptoms, practical habits, and when to seek professional help when relevant.\n\n" +
 
-                        "ImagePrompt:\n" +
-                        "- Ultra realistic professional health photography.\n" +
-                        "- Bright natural lighting.\n" +
-                        "- Clean modern environment.\n" +
-                        "- Healthy people performing the activity discussed.\n" +
-                        "- Highly detailed.\n" +
-                        "- Photorealistic.\n" +
-                        "- No text, logos or watermarks.\n" +
-                        "- Simple composition suitable for a blog cover.\n" +
-                        "- Optimize composition so the generated JPEG image is likely to remain under 500 KB while maintaining good visual quality.\n\n" +
+                        "FOOD TOPICS:\n" +
+                        "- Explain important nutrients and realistic benefits.\n" +
+                        "- Explain practical ways to eat or prepare the food.\n" +
+                        "- Mention who should limit or avoid it when genuinely relevant and explain why.\n" +
+                        "- Do not automatically connect every food to diabetes.\n\n" +
 
-                        "Return ONLY valid JSON:\n" +
+                        "ARTICLE:\n" +
+                        "- Headline under 80 characters.\n" +
+                        "- Body 500-800 words.\n" +
+                        "- Engaging introduction.\n" +
+                        "- Use useful <h2> sections, short <p> paragraphs, and <ul> lists.\n" +
+                        "- End with a short practical conclusion.\n" +
+                        "- Body must use ONLY <p>, <h2>, <blockquote>, and <ul> tags.\n\n" +
+
+                        "AVOID:\n" +
+                        "- AI-sounding language, filler, clichés, fear-mongering, miracle claims, and exaggerated promises.\n" +
+                        "- Words such as tapestry, transformative, miracle, revolutionary, life-changing, magical, delve, journey, and game-changing.\n" +
+                        "- Hashtags, emojis, Markdown, and unnecessary statistics.\n\n" +
+
+                        "IMAGE:\n" +
+                        "- Create an authentic photorealistic editorial photograph related to the topic.\n" +
+                        "- Make it look like a real professional photograph, not AI art or generic stock photography.\n" +
+                        "- Natural lighting, realistic people, skin, hands, body proportions, environment, food texture, and imperfections.\n" +
+                        "- Prefer candid, everyday situations over staged poses.\n" +
+                        "- Match the person's age and setting to the topic.\n" +
+                        "- No text, logos, watermarks, infographics, medical icons, glowing organs, or artificial effects.\n" +
+                        "- Blog-cover composition with some natural negative space.\n" +
+                        "- Optimize for a JPEG under 500 KB while maintaining good quality.\n\n" +
+
+                        "RETURN ONLY VALID JSON:\n" +
                         "{\n" +
                         "\"headline\":\"\",\n" +
                         "\"body\":\"\",\n" +
                         "\"imagePrompt\":\"\"\n" +
                         "}";
+
             default:
                 throw new IllegalArgumentException("Unknown category: " + category);
         }
     }
-//    private String buildPrompt(String category) {
-//
-//        switch (category) {
-//
-//            case "PERSONAL_STORIES":
-//                return "Generate a heartfelt personal experience post.\n\n" +
-//
-//                        "Writing Style:\n" +
-//                        "- First person narration.\n" +
-//                        "- Emotional and relatable.\n" +
-//                        "- Natural human language.\n" +
-//                        "- Include thoughts, feelings and reflections.\n" +
-//                        "- Make it feel like someone sharing a memorable life experience.\n\n" +
-//
-//                        "Requirements:\n" +
-//                        "- Headline should be meaningful and catchy.\n" +
-//                        "- Headline should be less than 80 characters.\n" +
-//                        "- Body should be between 350 and 600 words.\n" +
-//                        "- Include beginning, middle and ending.\n" +
-//                        "- Story should leave readers with emotions or a lesson.\n" +
-//                        "- Use proper paragraphs.\n\n" +
-//
-//                        "Special Instructions:\n" +
-//                        "- Include conversations if suitable.\n" +
-//                        "- Show emotions through actions and dialogue.\n" +
-//                        "- Make emotions realistic.\n" +
-//                        "- End with a reflection or realization.\n" +
-//                        "- Story should feel like something a person would share with friends.\n\n" +
-//
-//                        "ImagePrompt:\n" +
-//                        "- Cinematic realistic photography.\n" +
-//                        "- Warm lighting.\n" +
-//                        "- Highly detailed.\n" +
-//                        "- Professional photography style.\n" +
-//                        "- Describe one key scene from the story.\n\n" +
-//
-//                        "Additional Instructions:\n" +
-//                        "- Content should feel authentic and written by a real person.\n" +
-//                        "- Avoid sounding AI generated.\n" +
-//                        "- Avoid generic AI phrases.\n" +
-//                        "- Avoid overusing words like journey, unforgettable, delve, embrace, vibrant and cherish.\n" +
-//                        "- Avoid clichés.\n" +
-//                        "- Do not include hashtags.\n" +
-//                        "- Do not include emojis.\n" +
-//                        "- Never mention being an AI.\n\n" +
-//
-//                        "STRICT RULES:\n" +
-//                        "- Output MUST be valid JSON.\n" +
-//                        "- Do NOT use markdown.\n" +
-//                        "- Do NOT add explanations.\n\n" +
-//
-//                        "Return exactly this format:\n" +
-//                        "{\n" +
-//                        "\"headline\":\"\",\n" +
-//                        "\"body\":\"\",\n" +
-//                        "\"imagePrompt\":\"\"\n" +
-//                        "}";
-//
-//
-//            case "TRAVEL":
-//                return "Generate a beautiful travel experience post.\n\n" +
-//
-//                        "Writing Style:\n" +
-//                        "- Warm and immersive.\n" +
-//                        "- Describe places, food, people and culture.\n" +
-//                        "- Include emotions and memorable moments.\n" +
-//                        "- Make readers feel like they are travelling with the writer.\n\n" +
-//
-//                        "Requirements:\n" +
-//                        "- Headline should be attractive and blog style.\n" +
-//                        "- Headline should be less than 80 characters.\n" +
-//                        "- Body should be between 350 and 600 words.\n" +
-//                        "- Use proper paragraphs.\n" +
-//                        "- Inspire readers to visit the place.\n\n" +
-//
-//                        "Special Instructions:\n" +
-//                        "- Include local food and culture.\n" +
-//                        "- Describe sounds, smells and atmosphere.\n" +
-//                        "- Include one memorable moment.\n" +
-//                        "- Make readers feel present there.\n\n" +
-//
-//                        "ImagePrompt:\n" +
-//                        "- Ultra realistic travel photography.\n" +
-//                        "- Golden hour lighting.\n" +
-//                        "- Cinematic composition.\n" +
-//                        "- Vibrant colors.\n" +
-//                        "- Beautiful scenery.\n" +
-//                        "- Highly detailed.\n\n" +
-//
-//                        "Additional Instructions:\n" +
-//                        "- Content should feel authentic and written by a real person.\n" +
-//                        "- Avoid sounding AI generated.\n" +
-//                        "- Avoid generic AI phrases.\n" +
-//                        "- Avoid clichés.\n" +
-//                        "- Do not include hashtags.\n" +
-//                        "- Do not include emojis.\n" +
-//                        "- Never mention being an AI.\n\n" +
-//
-//                        "STRICT RULES:\n" +
-//                        "- Output MUST be valid JSON.\n" +
-//                        "- Do NOT use markdown.\n" +
-//                        "- Do NOT add explanations.\n\n" +
-//
-//                        "Return exactly this format:\n" +
-//                        "{\n" +
-//                        "\"headline\":\"\",\n" +
-//                        "\"body\":\"\",\n" +
-//                        "\"imagePrompt\":\"\"\n" +
-//                        "}";
-//
-//
-//            case "FICTION":
-//                return "Generate an original short fiction story.\n\n" +
-//
-//                        "Randomly choose one genre:\n" +
-//                        "- Mystery\n" +
-//                        "- Fantasy\n" +
-//                        "- Romance\n" +
-//                        "- Horror\n" +
-//                        "- Sci-Fi\n" +
-//                        "- Slice of Life\n\n" +
-//
-//                        "Writing Style:\n" +
-//                        "- Rich descriptions.\n" +
-//                        "- Emotional storytelling.\n" +
-//                        "- Strong characters.\n" +
-//                        "- Include natural dialogues.\n" +
-//                        "- Build suspense gradually.\n" +
-//                        "- End with a memorable ending.\n\n" +
-//
-//                        "Requirements:\n" +
-//                        "- Headline should feel like a novel title.\n" +
-//                        "- Headline should be less than 80 characters.\n" +
-//                        "- Body should be between 600 and 900 words.\n" +
-//                        "- Use proper paragraphs.\n" +
-//                        "- Story should feel like a chapter from a book.\n\n" +
-//
-//                        "Special Instructions:\n" +
-//                        "- Characters should feel believable.\n" +
-//                        "- Create emotional attachment to the characters.\n" +
-//                        "- Include vivid scene descriptions.\n" +
-//                        "- Avoid predictable endings.\n" +
-//                        "- End with a powerful final paragraph.\n\n" +
-//
-//                        "ImagePrompt:\n" +
-//                        "- Studio Ghibli style illustration.\n" +
-//                        "- Dreamy atmosphere.\n" +
-//                        "- Soft golden lighting.\n" +
-//                        "- Beautiful scenery.\n" +
-//                        "- Highly detailed anime art.\n" +
-//                        "- Vibrant colors.\n" +
-//                        "- Cinematic composition.\n" +
-//                        "- Whimsical mood.\n" +
-//                        "- The image should feel like a frame from a Studio Ghibli movie.\n" +
-//                        "- Describe the exact scene from the story.\n\n" +
-//
-//                        "Additional Instructions:\n" +
-//                        "- Content should feel authentic.\n" +
-//                        "- Avoid sounding AI generated.\n" +
-//                        "- Avoid generic AI phrases.\n" +
-//                        "- Show emotions through actions and dialogue.\n" +
-//                        "- Avoid clichés.\n" +
-//                        "- Do not include hashtags.\n" +
-//                        "- Do not include emojis.\n" +
-//                        "- Never mention being an AI.\n\n" +
-//
-//                        "STRICT RULES:\n" +
-//                        "- Output MUST be valid JSON.\n" +
-//                        "- Do NOT use markdown.\n" +
-//                        "- Do NOT add explanations.\n\n" +
-//
-//                        "Return exactly this format:\n" +
-//                        "{\n" +
-//                        "\"headline\":\"\",\n" +
-//                        "\"body\":\"\",\n" +
-//                        "\"imagePrompt\":\"\"\n" +
-//                        "}";
-//
-//            default:
-//                throw new IllegalArgumentException("Unknown category: " + category);
-//        }
-//    }
+
+    private String getRandomHealthTopic() {
+
+        List<String> topics = List.of(
+
+                // =========================
+                // DIABETES & ENDOCRINOLOGY
+                // =========================
+                "How walking after meals may help blood sugar control",
+                "Understanding insulin resistance in simple terms",
+                "Early lifestyle habits that can support healthy blood sugar",
+                "How fiber can affect blood sugar levels",
+                "Why sleep matters for blood sugar management",
+                "How stress can affect blood glucose",
+                "Prediabetes: lifestyle changes worth making early",
+                "Understanding HbA1c in simple language",
+                "Healthy breakfast ideas for people watching their blood sugar",
+                "Common diabetes mistakes people make with food",
+                "How regular exercise supports blood sugar management",
+                "Why foot care matters for people with diabetes",
+                "Diabetes and eye health: why regular eye checks matter",
+                "How diabetes can affect kidney health",
+                "Understanding low blood sugar and common warning signs",
+                "Metabolic syndrome and everyday lifestyle habits",
+                "Understanding thyroid health",
+                "Common signs of an underactive thyroid",
+                "How thyroid health can affect energy and weight",
+                "PCOS and everyday lifestyle habits",
+
+                // =========================
+                // HEART & BLOOD PRESSURE
+                // =========================
+                "Simple habits that support healthy blood pressure",
+                "How too much sodium can affect blood pressure",
+                "Why walking is good for heart health",
+                "Understanding LDL and HDL cholesterol",
+                "What triglycerides mean for your health",
+                "How sleep affects heart health",
+                "How stress affects cardiovascular health",
+                "Why regular exercise supports a healthy heart",
+                "How weight management can support heart health",
+                "Everyday foods that provide heart-friendly nutrients",
+                "Understanding resting heart rate",
+                "How smoking affects cardiovascular health",
+                "Why family history matters for heart disease risk",
+                "Heart health habits for people over 40",
+                "Warning signs of a possible heart attack",
+                "Understanding atrial fibrillation",
+                "How physical activity supports healthy circulation",
+
+                // =========================
+                // ORTHOPEDICS
+                // =========================
+                "Why your back may hurt after sitting all day",
+                "Simple habits that support a healthy spine",
+                "Common causes of knee pain",
+                "How to protect your knees during exercise",
+                "Why muscle strength matters for joint health",
+                "Understanding osteoarthritis",
+                "How posture affects neck and back discomfort",
+                "Simple ways to improve mobility as you age",
+                "Why balance exercises matter for older adults",
+                "How strength training supports bone health",
+                "Understanding osteoporosis",
+                "How to reduce the risk of falls as you get older",
+                "Common causes of shoulder pain",
+                "Understanding frozen shoulder",
+                "What can contribute to tennis elbow",
+                "How prolonged sitting affects your muscles and joints",
+                "Why stretching can help maintain flexibility",
+                "How to recover after a minor muscle strain",
+                "Why strong legs matter as you age",
+                "How footwear can affect foot comfort",
+
+                // =========================
+                // NEUROLOGY & BRAIN HEALTH
+                // =========================
+                "How sleep affects memory and concentration",
+                "Simple habits that support brain health",
+                "Why regular exercise benefits the brain",
+                "Common causes of headaches",
+                "Understanding migraine triggers",
+                "Why stress can affect concentration",
+                "What brain fog can feel like and common causes",
+                "How excessive screen time can affect concentration",
+                "Understanding peripheral neuropathy",
+                "How diabetes can affect nerve health",
+                "Stroke prevention habits worth knowing",
+                "Understanding dizziness and common causes",
+                "Understanding vertigo",
+                "How healthy aging can support cognitive health",
+                "Why social connection matters for brain health",
+                "How nutrition supports brain function",
+                "Why sleep is important for cognitive performance",
+                "Healthy habits that support memory as you age",
+
+                // =========================
+                // RESPIRATORY HEALTH
+                // =========================
+                "Simple habits that support lung health",
+                "Understanding asthma triggers",
+                "How air pollution can affect respiratory health",
+                "Why secondhand smoke is harmful",
+                "How exercise supports lung function",
+                "Understanding sleep apnea",
+                "Why some people snore more than others",
+                "When a persistent cough deserves medical attention",
+                "How indoor air quality affects breathing",
+                "Seasonal allergies and breathing problems",
+                "How smoking damages the lungs",
+                "Healthy habits for people with asthma",
+
+                // =========================
+                // DIGESTIVE HEALTH
+                // =========================
+                "Simple habits that support better digestion",
+                "Why fiber matters for digestive health",
+                "Common causes of bloating",
+                "Understanding constipation",
+                "How hydration affects digestion",
+                "Understanding acid reflux",
+                "Foods that may trigger heartburn",
+                "Understanding the gut microbiome",
+                "Probiotics and digestive health",
+                "Prebiotics and gut health",
+                "Understanding lactose intolerance",
+                "How stress can affect digestion",
+                "Healthy habits for better bowel regularity",
+                "Understanding irritable bowel syndrome",
+                "How eating too quickly can affect digestion",
+
+                // =========================
+                // KIDNEY HEALTH
+                // =========================
+                "Simple habits that support kidney health",
+                "How high blood pressure can affect the kidneys",
+                "How diabetes can affect kidney health",
+                "Understanding kidney stones",
+                "How hydration supports kidney function",
+                "Why too much sodium can be hard on the kidneys",
+                "Understanding chronic kidney disease",
+                "Why regular health checks matter for kidney health",
+                "How healthy weight management supports kidney health",
+
+                // =========================
+                // LIVER HEALTH
+                // =========================
+                "Simple habits that support liver health",
+                "Understanding fatty liver disease",
+                "How weight can affect liver health",
+                "How diabetes is connected to fatty liver",
+                "How alcohol can affect the liver",
+                "Foods that can support a balanced diet for liver health",
+                "Why regular exercise matters for liver health",
+                "Understanding liver function tests",
+
+                // =========================
+                // EYE HEALTH
+                // =========================
+                "How to reduce digital eye strain",
+                "Simple habits that support healthy vision",
+                "Why regular eye examinations matter",
+                "Understanding dry eyes",
+                "How screen time can affect your eyes",
+                "Understanding cataracts",
+                "Understanding glaucoma",
+                "How diabetes can affect eye health",
+                "Why sunglasses matter for eye health",
+                "Eye health habits for older adults",
+                "How nutrition supports eye health",
+
+                // =========================
+                // SKIN & HAIR
+                // =========================
+                "Simple habits that support healthy skin",
+                "Understanding dry skin and common causes",
+                "How to protect your skin from sun exposure",
+                "Understanding acne and common triggers",
+                "Simple habits for healthier scalp and hair",
+                "Understanding dandruff",
+                "Common causes of hair loss",
+                "How hydration affects skin",
+                "How sleep affects skin health",
+                "Understanding eczema",
+                "Understanding psoriasis",
+                "Why sunscreen matters throughout the year",
+
+                // =========================
+                // DENTAL HEALTH
+                // =========================
+                "Simple habits that protect your teeth",
+                "Why flossing matters for gum health",
+                "Understanding gum disease",
+                "How sugar affects dental health",
+                "Why regular dental checkups matter",
+                "Common causes of tooth sensitivity",
+                "How dry mouth can affect oral health",
+                "The connection between diabetes and oral health",
+                "How acidic drinks can affect tooth enamel",
+                "Healthy dental habits for older adults",
+
+                // =========================
+                // MENTAL HEALTH
+                // =========================
+                "Simple ways to manage everyday stress",
+                "How exercise can support mental well-being",
+                "Why sleep matters for emotional health",
+                "Understanding workplace burnout",
+                "How social connection supports mental well-being",
+                "Simple mindfulness habits for busy people",
+                "How excessive screen time can affect mental well-being",
+                "Understanding loneliness and social health",
+                "Healthy ways to manage work-related stress",
+                "Why taking regular breaks can improve mental well-being",
+                "How physical activity can improve mood",
+                "When ongoing stress may require professional support",
+
+                // =========================
+                // SLEEP
+                // =========================
+                "Simple habits that can improve sleep quality",
+                "Why a consistent sleep schedule matters",
+                "How evening screen time can affect sleep",
+                "How caffeine affects sleep",
+                "How exercise can improve sleep",
+                "Understanding insomnia",
+                "Why some people wake up tired",
+                "Understanding sleep apnea",
+                "How stress affects sleep",
+                "Healthy sleep habits for older adults",
+                "Healthy sleep habits for teenagers",
+                "How shift work can affect sleep",
+
+                // =========================
+                // WOMEN'S HEALTH
+                // =========================
+                "Understanding menstrual health",
+                "Common causes of period pain",
+                "Understanding PMS",
+                "PCOS and lifestyle habits",
+                "Nutrition during pregnancy",
+                "Understanding menopause",
+                "How menopause can affect sleep",
+                "Menopause and bone health",
+                "Menopause and heart health",
+                "Why iron matters for women's health",
+                "Breast health awareness",
+                "Women's heart health",
+                "Women's mental health",
+
+                // =========================
+                // MEN'S HEALTH
+                // =========================
+                "Simple habits that support men's heart health",
+                "Understanding prostate health",
+                "Why strength training matters for men",
+                "Men's mental health and stress",
+                "Healthy weight management for men",
+                "Understanding common causes of hair loss",
+                "Why sleep matters for men's health",
+                "How nutrition supports men's health",
+
+                // =========================
+                // HEALTHY AGING
+                // =========================
+                "Why muscle strength becomes important after 50",
+                "How to maintain mobility as you age",
+                "Simple exercises for adults over 60",
+                "How to reduce fall risk as you get older",
+                "Why protein matters for older adults",
+                "How hydration needs can change with age",
+                "How to support bone health after 50",
+                "Healthy habits that support independence in older age",
+                "How social connection supports healthy aging",
+                "Simple ways to protect cognitive health as you age",
+
+                // =========================
+                // FITNESS
+                // =========================
+                "Why walking is an underrated form of exercise",
+                "Benefits of strength training for beginners",
+                "Simple exercises for people who sit all day",
+                "How to start exercising after a long break",
+                "Why warm-ups matter before exercise",
+                "Why recovery days matter",
+                "How stretching supports mobility",
+                "How exercise intensity affects fitness",
+                "Simple ways to become more active during the day",
+                "Exercise habits for people over 50",
+                "How strength training supports healthy aging",
+                "How regular exercise supports metabolic health",
+
+                // =========================
+                // FOOD & NUTRITION
+                // =========================
+                "Health benefits of oats and who should be cautious",
+                "Nutritional benefits of eggs",
+                "What makes almonds a nutritious snack",
+                "Health benefits of spinach",
+                "Is yogurt a useful part of a balanced diet?",
+                "What nutrients do lentils provide?",
+                "Health benefits of sweet potatoes",
+                "Why berries can be a useful addition to the diet",
+                "Nutritional benefits of pumpkin seeds",
+                "What makes chickpeas a nutritious food?",
+                "Health benefits of walnuts",
+                "What nutrients does avocado provide?",
+                "Is brown rice healthier than white rice?",
+                "Health benefits of apples",
+                "What makes guava a nutritious fruit?",
+                "Nutritional benefits of papaya",
+                "Health benefits of carrots",
+                "What makes broccoli a useful vegetable?",
+                "Health benefits of tomatoes",
+                "What nutrients do bananas provide?",
+                "Health benefits of oranges",
+                "Is paneer a good source of protein?",
+                "What makes tofu a useful protein source?",
+                "Health benefits of fish",
+                "Why omega-3 fats matter",
+                "Health benefits of chia seeds",
+                "What makes flax seeds nutritious?",
+                "Health benefits of chickpeas",
+                "Is coconut healthy to eat regularly?",
+                "What makes pomegranate nutritious?",
+                "Health benefits of mushrooms",
+                "Is potato a healthy food?",
+                "Healthy ways to include rice in a balanced diet",
+                "How fiber supports overall health",
+                "Why protein matters in everyday nutrition",
+                "Understanding healthy fats",
+                "How added sugar affects health",
+                "Why portion size matters",
+
+                // =========================
+                // HYDRATION
+                // =========================
+                "How much water does your body actually need?",
+                "Signs that you may not be drinking enough water",
+                "How hydration affects exercise performance",
+                "Why hydration matters during hot weather",
+                "How hydration supports digestion",
+                "Hydration habits for older adults",
+                "How caffeine affects hydration",
+
+                // =========================
+                // PREVENTIVE HEALTH
+                // =========================
+                "Why regular blood pressure checks matter",
+                "Why cholesterol testing matters",
+                "Why routine blood sugar testing can be useful",
+                "Why regular dental checkups matter",
+                "Why eye examinations are important",
+                "Understanding preventive health checkups",
+                "Why family medical history matters",
+                "Healthy habits that reduce long-term health risks",
+                "Why preventive care becomes more important with age",
+
+                // =========================
+                // WORKPLACE HEALTH
+                // =========================
+                "How sitting all day affects your body",
+                "Simple desk exercises for office workers",
+                "How to improve posture at your desk",
+                "How screen time affects eye strain at work",
+                "How workplace stress affects health",
+                "Healthy snack ideas for the office",
+                "Why taking walking breaks matters",
+                "How remote work can affect physical activity",
+                "How shift work affects sleep",
+                "Simple ways to stay active during a workday"
+        );
+
+        return topics.get(ThreadLocalRandom.current().nextInt(topics.size()));
+    }
 }

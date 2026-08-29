@@ -8,13 +8,14 @@ import java.util.Map;
 @Component
 public class AuthClient {
 
-    private final WebClient webClient = WebClient.create("http://postwebapp-env.eba-8rgy9ptm.ap-south-1.elasticbeanstalk.com");
+    private final WebClient webClient = WebClient.create("https://postfridgeprod.onrender.com");
 
     public String loginAndGetToken() {
 
         Map<String, String> request = Map.of(
-                "email", "vijaydeepjain@gmail.com",
-                "password", "vijay123"
+              //  "email", "vijayjain0824@gmail.com",
+                "email", "harsh@postfridge.com",
+                "password", "string"
         );
 
         Map response = webClient.post()
