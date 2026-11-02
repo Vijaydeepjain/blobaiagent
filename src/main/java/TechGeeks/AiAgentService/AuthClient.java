@@ -13,8 +13,8 @@ public class AuthClient {
     public String loginAndGetToken() {
 
         Map<String, String> request = Map.of(
-              //  "email", "vijayjain0824@gmail.com",
-                "email", "harsh@postfridge.com",
+                "email", "vijayjain0824@gmail.com",
+              //  "email", "harsh@postfridge.com",
                 "password", "string"
         );
 

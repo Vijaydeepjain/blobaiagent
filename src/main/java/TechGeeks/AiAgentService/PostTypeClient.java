@@ -14,8 +14,8 @@ public class PostTypeClient {
                 //"PERSONAL_STORIES",
                // "TRAVEL",
                // "FICTION"
-               // "HEALTH"
-                "TECH"
+                "HEALTH"
+                //"TECH"
         );
     }
 }

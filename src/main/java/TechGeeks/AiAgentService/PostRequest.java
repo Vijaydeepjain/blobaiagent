@@ -11,6 +11,7 @@ public class PostRequest {
     private String body;
     private List<FileData> files;
     private List<String> postType;
+    private String mediaType;
 
     // constructor, getters, setters
 }

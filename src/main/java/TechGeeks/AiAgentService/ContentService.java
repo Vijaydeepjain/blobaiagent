@@ -79,6 +79,7 @@ public class ContentService {
         post.setBody(body);
         post.setPostType(List.of(category));
         post.setFiles(List.of(new FileData(fileKey, fileToken)));
+        post.setMediaType("IMAGE");
 
         ObjectMapper mapper = new ObjectMapper();
 
