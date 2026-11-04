@@ -9,8 +9,7 @@ import lombok.RequiredArgsConstructor;
 public enum PostType {
 
     DAILY_DOSE("Daily Dose", ParentCategory.WORLD_AND_SOCIETY),
-    POLITICS("Politics", ParentCategory.WORLD_AND_SOCIETY),
-    GEOPOLITICS("Geopolitics", ParentCategory.WORLD_AND_SOCIETY),
+    WORLD("World", ParentCategory.WORLD_AND_SOCIETY),
 
     TECH("Technology & AI", ParentCategory.KNOWLEDGE_AND_INNOVATION),
     SCIENCE("Science", ParentCategory.KNOWLEDGE_AND_INNOVATION),
@@ -25,7 +24,6 @@ public enum PostType {
 
     STORIES("Stories", ParentCategory.COMMUNITY_AND_EXPRESSION),
     POETRY("Poetry", ParentCategory.COMMUNITY_AND_EXPRESSION),
-    SHAYARI("Shayari", ParentCategory.COMMUNITY_AND_EXPRESSION),
 
     ENTERTAINMENT("Entertainment", ParentCategory.ENTERTAINMENT_AND_SPORTS),
     SPORTS("Sports", ParentCategory.ENTERTAINMENT_AND_SPORTS);
